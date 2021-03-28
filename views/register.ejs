@@ -1,0 +1,27 @@
+<%- include('header'); -%>
+<h1><%= title %></h1>
+<% if (err) { %>
+<%= err %>
+<% } %>
+<form method="post" action="/users/create">
+    <div class="form-group">
+        <label for="inputUsername">Username</label>
+        <input type="text" name="username" class="form-control" id="inputUsername" placeholder="Enter your username" required>
+    </div>
+    <div class="form-group">
+        <label for="inputEmail">Email address</label>
+        <input type="email" name="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter email" required>
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword">Password</label>
+        <input type="password" name="password" class="form-control" id="inputPassword" placeholder="Password" required>
+    </div>
+    <div class="form-check">
+        <input type="checkbox" name="rememberme" class="form-check-input" id="rememberme">
+        <label class="form-check-label" for="rememberme">Remember me</label>
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary">Sign in</button>
+</form>
+<%- include('footer'); -%>
