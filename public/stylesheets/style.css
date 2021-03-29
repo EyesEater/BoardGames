@@ -3,12 +3,24 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   margin-top: 60px !important;
 }
-a {
-  color: #00b7ff;
-}
-button:focus {
-  outline: 0;
-}
 .navbar .dropdown-menu .form-control {
   width: 200px;
+}
+.game-image {
+  filter: none;
+  -webkit-filter: grayscale(0%);
+}
+.game-image:hover {
+  filter: #808080;
+  -webkit-filter: grayscale(100%);
+}
+.game-title {
+  text-align: center;
+}
+.game-button {
+  display: none;
+}
+.game-image:hover + .game-button,
+.game-button:hover {
+  display: inline-block;
 }

@@ -1,0 +1,45 @@
+<%- include('header'); -%>
+<h1><%= title %></h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Role</th>
+            <th scope="col">Created At</th>
+            <th scope="col">Updated At</th>
+            <th scope="col">Grant</th>
+            <th scope="col">Revoke</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% users.forEach((u) => { %>
+            <tr>
+                <th scope="row"><%= u.id %></th>
+                <td><%= u.username %></td>
+                <td><%= u.email %></td>
+                <td><%= u.role %></td>
+                <td><%= moment(u.createdAt).format('LLLL') %></td>
+                <td><%= moment(u.updatedAt).format('LLLL') %></td>
+                <td><% if (u.role !== "admin" && u.role !== "moderator") { %><button type="button" class="btn btn-success btn-moderator" value="<%= u.id %>">Moderator</button><% } %></td>
+                <td><% if (u.role !== "admin" && u.role !== "user") { %><button type="button" class="btn btn-danger btn-user" value="<%= u.id %>">User</button><% } %></td>
+            </tr>
+        <% }); %>
+    </tbody>
+</table>
+<script>
+    $(".btn-moderator").click((e) => {
+        let idUser = e.currentTarget.value;
+        $.post("/users/moderator", { idUser: idUser }, () => {
+            location.reload();
+        });
+    });
+    $(".btn-user").click((e) => {
+        let idUser = e.currentTarget.value;
+        $.post("/users/user", { idUser: idUser }, () => {
+            location.reload();
+        });
+    });
+</script>
+<%- include('footer'); -%>
