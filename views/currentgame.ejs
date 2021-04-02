@@ -1,4 +1,47 @@
 <%- include('header'); -%>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+<h1><%= title %></h1>
+<p>Welcome to <%= title %></p>
+<div class="container">
+    <div class="row">
+        <% for(let gameId in games) { %>
+            <div class="col-3 text-center">
+                <p><%= games[gameId]['game'].title %></p>
+                <table class="table table-stripped table-bordered">
+                    <thead>
+                    <tr>
+                        <th scope="col">Utilisateurs</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-primary"><%= games[gameId]['owner'].username %></td>
+                        </tr>
+                    <% for (let user in games[gameId]['users'][0]) { %>
+                        <tr>
+                            <td><%= games[gameId]['users'][0][user].username %></td>
+                        </tr>
+                    <% } %>
+                        <tr>
+                            <% if (games[gameId]['participate'].ownerId === user.id) { %>
+                                <td><button class="btn btn-success" onclick="launch(<%= games[gameId]['participate'].id %>)">Lancer</button></td>
+                            <% } else { %>
+                                <td><button class="btn btn-success" onclick="play(<%= games[gameId]['participate'].id %>)">Jouer</button></td>
+                            <% } %>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </div>
+</div>
+<script>
+    function play(participateId) {
+        location.href = `/play/${participateId}`;
+    }
+    function launch(participateId) {
+        $.post(`/game/launch/${participateId}`, (code) => {
+            location.href = `/play/${participateId}`;
+        });
+    }
+</script>
 <%- include('footer'); -%>

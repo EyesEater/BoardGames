@@ -18,6 +18,15 @@ let Game = sequelize.define('game', {
     image: {
         type: Sequelize.STRING,
         allowNull: false
+    },
+    maxPlayer: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+    },
+    minPlayer: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        defaultValue: 2,
+        allowNull: false
     }
 });
 

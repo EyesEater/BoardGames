@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+var app = require('../appNode');
 var debug = require('debug')('boardgames:server');
 var http = require('http');
 

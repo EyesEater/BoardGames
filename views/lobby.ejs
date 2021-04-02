@@ -1,16 +1,19 @@
 <%- include('header'); -%>
 <h1><%= title %></h1>
 <p>Liste des jeux</p>
+<% if(error) { %>
+<p><%= error %></p>
+<% } %>
 <div class="container">
     <div class="row">
         <% games.forEach((game) => { %>
-            <div class="col-4">
+            <div class="col-md-3">
                 <h2 class="game-title"><%= game.title %></h2>
                 <div class="game-container">
-                    <img class="game-image img-thumbnail" src="<%= game.image %>" alt="<%= game.title %>" width="400px" height="auto">
+                    <img class="game-image img-thumbnail" src="<%= game.image %>" alt="<%= game.title %>">
                     <div class="game-button">
-                        <button class="btn btn-primary">Rejoindre</button>
-                        <button class="btn btn-secondary">Créer</button>
+                        <button class="btn-game btn btn-primary" onclick="location.href = '/game/join/<%= game.id %>'">Rejoindre</button>
+                        <button class="btn-game btn btn-secondary" onclick="location.href = '/game/create/<%= game.id %>'">Créer</button>
                     </div>
                 </div>
             </div>

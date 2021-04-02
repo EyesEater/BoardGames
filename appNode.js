@@ -7,11 +7,26 @@ let stylus = require('stylus');
 let bodyParser = require('body-parser');
 let session = require('express-session');
 
+const Game = require('./models/Game');
+const User = require('./models/User');
+const Lobby = require('./models/Lobby');
+const Participate = require('./models/Participate');
+
+Game.belongsToMany(User, { through: Lobby });
+User.belongsToMany(Game, { through: Lobby });
+User.hasMany(Lobby);
+Participate.belongsTo(User, { as: 'owner' });
+Participate.belongsTo(Game, { as: 'game' });
+Participate.hasMany(Lobby);
+Lobby.belongsTo(Participate);
+
 let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
-let lobbyRouter = require('./routes/lobby.js');
+let lobbyRouter = require('./routes/lobby');
 let gamelistRouter = require('./routes/gamelist');
 let currentgame = require('./routes/currentgame');
+let gameRouter = require('./routes/game');
+let playRouter = require('./routes/play');
 
 let app = express();
 
@@ -52,6 +67,8 @@ app.use('/users', usersRouter);
 app.use('/lobby', lobbyRouter);
 app.use('/gamelist', gamelistRouter);
 app.use('/currentgame', currentgame);
+app.use('/game', gameRouter);
+app.use('/play', playRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -2,35 +2,21 @@ let express = require('express');
 let router = express.Router();
 let moment = require('moment');
 let User = require('../models/User');
+const sessionChecker = require('../services/sessionChecker');
 
 moment.locale('fr');
 
-let sessionChecker = (req, res, next) => {
-  console.log(req.session.user);
-  console.log(req.cookies.user_sid);
-  if (req.session.user && req.cookies.user_sid) {
-    res.redirect('/');
-  } else {
-    next();
-  }
-};
-
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  if (req.session.user && req.cookies.user_sid) {
-
-    User.findAll().then((users, error) => {
-      if (error)
-        res.render('users', {title: 'Utilisateurs', page_name: 'users', err: error, user: req.session.user, users: '', moment: moment});
-      else
-        res.render('users', {title: 'Utilisateurs', page_name: 'users', err: '', user: req.session.user, users: users, moment: moment});
-    });
-  } else {
-    res.redirect('/');
-  }
+router.route('/').get(sessionChecker, function(req, res, next) {
+  User.findAll().then((users, error) => {
+    if (error)
+      res.render('users', {title: 'Utilisateurs', page_name: 'users', err: error, user: req.session.user, users: '', moment: moment});
+    else
+      res.render('users', {title: 'Utilisateurs', page_name: 'users', err: '', user: req.session.user, users: users, moment: moment});
+  });
 });
 
-router.route('/register').get(sessionChecker, (req, res) => {
+router.route('/register').get((req, res) => {
   res.render('register', { title: 'Sign In', page_name: 'home', err: '', user: '' });
 });
 
@@ -60,17 +46,19 @@ router.post('/create', (req, res) => {
   }
 });
 
-router.route('/login').post(sessionChecker, (req, res) => {
+router.route('/login').get(((req, res) => {
+  res.render('login', {title: 'Login', page_name: 'home', error: '', user: ''});
+})).post((req, res) => {
   User.findOne({ where: { username: req.body.username } }).then((user) => {
     if (!user) {
-      res.render('/', { title: 'Accueil', page_name: 'home', error: 'Username not found', user: '' });
+      res.render(req.url.substring(1), { title: 'Accueil', page_name: 'home', error: 'Username not found', user: '' });
     } else if (!user.validPassword(req.body.password)) {
-      res.render('/', { title: 'Accueil', page_name: 'home', error: 'Wrong password', user: '' });
+      res.render(req.url.substring(1), { title: 'Accueil', page_name: 'home', error: 'Wrong password', user: '' });
     } else {
       req.session.user = user.dataValues;
       res.redirect('/');
     }
-  })
+  });
 });
 
 router.post('/logout', (req, res) => {

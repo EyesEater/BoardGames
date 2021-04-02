@@ -1,0 +1,41 @@
+<%- include('header'); -%>
+<h1><%= title %></h1>
+<div class="container" ng-controller="playController">
+    <div class="row">
+        <div class="col-md-1 text-center">
+            <div class="row">
+                <div class="col-12">
+                    <h2>Golden Nugget</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <img ng-src="/images/">
+                </div>
+            </div>
+        <div class="col-md-1 text-center">Caesar's Palace</div>
+        <div class="col-md-1 text-center">The Mirage</div>
+        <div class="col-md-1 text-center">Sahara</div>
+        <div class="col-md-1 text-center">Luxor</div>
+        <div class="col-md-1 text-center">Circus Circus</div>
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row p-3 mb-1 rounded" ng-repeat="(key, userData) in config.users track by $index">
+                        <div class="col-12">{{ userData.user.username }}</div>
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-2 mb-2" ng-repeat="d in userData.des track by $index">
+                                    <img class="pr-2" ng-if="$first" ng-src="/images/{{ userData.color }}/{{ (d % 6) + 1 }}.png" alt="Dés numéro {{ d }}" width="60px">
+                                    <img ng-if="!$first" ng-src="/images/{{ userData.color }}/{{ d }}.png" alt="Dés numéro {{ d }}" width="40px">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">ça c'est les logs</div>
+    </div>
+</div>
+<%- include('footer'); -%>

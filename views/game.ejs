@@ -1,0 +1,53 @@
+<%- include('header'); -%>
+<h1><%= participate.game.title %></h1>
+<p><%= participate.game.description %></p>
+<div class="container">
+    <div class="row">
+        <% for(let gameId in lobbies) { %>
+            <div class="col-md-2">
+                <table class="table table-stripped table-bordered">
+                    <thead>
+                    <tr>
+                        <th scope="col" class="text-center">Utilisateurs dans la partie</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="text-center text-primary"><%= lobbies[gameId]['owner'].username %></td>
+                    </tr>
+                    <% lobbies[gameId]['users'].forEach((user) => { %>
+                        <tr>
+                            <td class="text-center"><%= user.username %></td>
+                        </tr>
+                    <% }); %>
+                    <% for(let i=1; i < (lobbies[gameId]['maxPlayer'] - lobbies[gameId]['users'].length); i++ ) { %>
+                        <tr>
+                            <td class="text-center">Place libre</td>
+                        </tr>
+                    <% } %>
+                    <tr>
+                        <% if (lobbies[gameId]['isOwner']) { %>
+                            <td class="text-center"><button class="btn btn-success" onclick="launch(<%= participate.id %>)">Lancer</button></td>
+                        <% } else { %>
+                            <td class="text-center"><button onclick="join(<%= lobbies[gameId]['participate'] %>)" class="btn btn-<%= (lobbies[gameId]['isFull'] <= 0) ? 'danger' : 'success' %>" <%= (lobbies[gameId]['isFull'] <= 0 || lobbies[gameId]['canJoin'] === false) ? 'disabled' : '' %>>Rejoindre</button></td>
+                        <% } %>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </div>
+</div>
+<script>
+    function join(participateId) {
+        $.post(`/game/join/${participateId}`, (code) => {
+            location.reload();
+        });
+    }
+    function launch(participateId) {
+        $.post(`/game/launch/${participateId}`, (code) => {
+            location.href = `/play/${participateId}`;
+        });
+    }
+</script>
+<%- include('footer'); -%>

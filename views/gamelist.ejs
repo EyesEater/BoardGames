@@ -1,4 +1,29 @@
 <%- include('header'); -%>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+<div class="container">
+    <div class="row">
+        <% for(let gameId in games) { %>
+            <div class="col-3 text-center">
+                <p><%= games[gameId]['game'].title %></p>
+                <table class="table table-stripped table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Utilisateurs</th>
+                            <th scope="col">Classement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (let user in games[gameId]['users'][0]) { %>
+                            <tr>
+                                <td><%= games[gameId]['users'][0][user].username %></td>
+                                <td>Classement</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </div>
+</div>
 <%- include('footer'); -%>

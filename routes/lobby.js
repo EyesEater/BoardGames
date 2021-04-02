@@ -1,6 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let Game = require('../models/Game');
+const Participate = require('../models/Participate');
 
 /* GET lobby page. */
 router.get('/', function(req, res) {

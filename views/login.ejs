@@ -1,0 +1,35 @@
+<%- include('header'); -%>
+<h1><%= title %></h1>
+<p>Connexion</p>
+<% if (error) { %>
+    <p><%= error %></p>
+<% } %>
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <form class="form" role="form" method="post" action="/users/login">
+                <div class="form-group">
+                    <label for="usernameLogin">Username:</label>
+                    <input id="usernameLogin" placeholder="Username" class="form-control form-control-sm"
+                           type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="passwordLogin">Password:</label>
+                    <input id="passwordLogin" placeholder="Password"
+                           class="form-control form-control-sm" type="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                </div>
+                <div class="form-group">
+                    <button type="button" onclick="location.href ='/users/register'" class="btn btn-secondary btn-block">Sign in</button>
+                </div>
+                <div class="form-group text-center">
+                    <small><a href="#" data-toggle="modal" data-target="#modalPassword">Forgot
+                            password?</a></small>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<%- include('footer'); -%>
