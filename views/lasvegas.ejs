@@ -1,33 +1,61 @@
 <%- include('header'); -%>
 <h1><%= title %></h1>
-<div class="container" ng-controller="playController">
+<div class="container-fluid" ng-controller="playController">
     <div class="row">
-        <div class="col-md-1 text-center">
-            <div class="row">
-                <div class="col-12">
-                    <h2>Golden Nugget</h2>
+        <div class="col-xl-7">
+            <div class="row text-center">
+                <div class="col-2">
+                    <h4 class="font-weight-bold">Golden Nugget</h4>
+                </div>
+                <div class="col-2">
+                    <h4 class="font-weight-bold">Caesar's Palace</h4>
+                </div>
+                <div class="col-2">
+                    <h4 class="font-weight-bold">The Mirage</h4>
+                </div>
+                <div class="col-2">
+                    <h4 class="font-weight-bold">Sahara</h4>
+                </div>
+                <div class="col-2">
+                    <h4 class="font-weight-bold">Luxor</h4>
+                </div>
+                <div class="col-2">
+                    <h4 class="font-weight-bold">Circus Circus</h4>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12">
-                    <img ng-src="/images/">
+
+            <div class="row no-gutters text-center">
+                <div jqyoui-droppable data-drop="true" class="col-2">
+                    <img ng-src="/images/Column/One.png" width="100%">
+                </div>
+                <div jqyoui-droppable data-drop="true" class="col-2">
+                    <img ng-src="/images/Column/Two.png" width="100%">
+                </div>
+                <div jqyoui-droppable data-drop="true" class="col-2">
+                    <img ng-src="/images/Column/Three.png" width="100%">
+                </div>
+                <div jqyoui-droppable data-drop="true" class="col-2">
+                    <img ng-src="/images/Column/Four.png" width="100%">
+                </div>
+                <div jqyoui-droppable data-drop="true" class="col-2">
+                    <img ng-src="/images/Column/Five.png" width="100%">
+                </div>
+                <div jqyoui-droppable data-drop="true" class="col-2">
+                    <img ng-src="/images/Column/Six.png" width="100%">
                 </div>
             </div>
-        <div class="col-md-1 text-center">Caesar's Palace</div>
-        <div class="col-md-1 text-center">The Mirage</div>
-        <div class="col-md-1 text-center">Sahara</div>
-        <div class="col-md-1 text-center">Luxor</div>
-        <div class="col-md-1 text-center">Circus Circus</div>
-        <div class="col-md-4">
+        </div>
+
+        <div class="col-8 col-xl-3">
             <div class="row">
                 <div class="col-12">
                     <div class="row p-3 mb-1 rounded" ng-repeat="(key, userData) in config.users track by $index">
                         <div class="col-12">{{ userData.user.username }}</div>
                         <div class="col-12">
                             <div class="row">
-                                <div class="col-2 mb-2" ng-repeat="d in userData.des track by $index">
-                                    <img class="pr-2" ng-if="$first" ng-src="/images/{{ userData.color }}/{{ (d % 6) + 1 }}.png" alt="Dés numéro {{ d }}" width="60px">
-                                    <img ng-if="!$first" ng-src="/images/{{ userData.color }}/{{ d }}.png" alt="Dés numéro {{ d }}" width="40px">
+                                <div class="col-2 mb-2" data-drag="true" jqyoui-draggable="{animate: true}" data-jqyoui-options="{revert: 'invalid'}" ng-repeat="d in userData.des track by $index">
+                                    <img class="pr-2" data-drag="true" jqyoui-draggable="{animate: true}" data-jqyoui-options="{revert: 'invalid'}" ng-if="$first" ng-src="/images/Dice/{{ userData.color }}/{{ (d % 6) + 1 }}.png" alt="Dés numéro {{ d }}" width="60px">
+                                    <img ng-if="!$first" data-drag="true" jqyoui-draggable="{animate: true}" data-jqyoui-options="{revert: 'invalid'}" ng-src="/images/Dice/{{ userData.color }}/{{ d }}.png" alt="Dés numéro {{ d }}" width="40px">
                                 </div>
                             </div>
                         </div>
@@ -35,7 +63,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">ça c'est les logs</div>
+        <div class="col-4 col-xl-2">ça c'est les logs</div>
     </div>
 </div>
 <%- include('footer'); -%>

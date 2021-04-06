@@ -22,3 +22,6 @@ body {
   text-align: center;
   width: 200px;
 }
+h4 {
+  font-size: calc(1.2rem + 0.4vw);
+}

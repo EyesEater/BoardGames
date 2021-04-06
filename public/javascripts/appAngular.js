@@ -1,4 +1,4 @@
-const app = angular.module('boardgame', ['LocalStorageModule'], $locationProvider => {
+const app = angular.module('boardgame', ['LocalStorageModule', 'ngDragDrop'], $locationProvider => {
     $locationProvider.html5Mode({
         enabled: true,
         requireBase: false
