@@ -27,7 +27,11 @@
                     <% } %>
                     <tr>
                         <% if (lobbies[gameId]['isOwner']) { %>
-                            <td class="text-center"><button class="btn btn-success" onclick="launch(<%= lobbies[gameId]['participate'].id %>)">Lancer</button></td>
+                            <% if (lobbies[gameId]['users'].length >= lobbies[gameId]['minPlayer']) { %>
+                                <td class="text-center"><button class="btn btn-success" onclick="launch(<%= lobbies[gameId]['participate'] %>)">Lancer</button></td>
+                            <% } else {%>
+                                <td class="text-center"><button class="btn btn-success" onclick="launch(<%= lobbies[gameId]['participate'] %>)" title="En attente de joueurs" disabled>Lancer</button></td>
+                            <% } %>
                         <% } else { %>
                             <td class="text-center"><button onclick="join(<%= lobbies[gameId]['participate'] %>)" class="btn btn-<%= (lobbies[gameId]['isFull'] <= 0) ? 'danger' : 'success' %>" <%= (lobbies[gameId]['isFull'] <= 0 || lobbies[gameId]['canJoin'] === false) ? 'disabled' : '' %>>Rejoindre</button></td>
                         <% } %>

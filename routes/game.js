@@ -21,9 +21,10 @@ let getGames = async (participates, currentUser) => {
 
         parties[participate.gameId]['participate'] = participate.id;
 
-        if (!parties[participate.gameId]['maxPlayer']) {
+        if (!parties[participate.gameId]['maxPlayer'] || !parties[participate.gameId]['minPlayer']) {
             await Game.findByPk(participate.gameId).then((game) => {
                 parties[game.id]['maxPlayer'] = participate.nbplayer;
+                parties[game.id]['minPlayer'] = game.minPlayer;
             });
             parties[participate.gameId]['isFull'] = parties[participate.gameId]['maxPlayer'] - await Lobby.count({where: {gameId: participate.gameId}});
         }
