@@ -58,7 +58,7 @@ router.route('/join/:id').get(sessionChecker, function(req, res) {
         } else {
 
             getGames(participates, req.session.user).then((parties) => {
-                Participate.findOne({include: 'game', where: {id: req.params.id}}).then((participate, error) => {
+                Participate.findOne({include: 'game', where: {gameId: req.params.id}}).then((participate, error) => {
                     if (error)
                         res.redirect('/lobby');
 
