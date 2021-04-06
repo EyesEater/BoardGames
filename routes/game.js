@@ -47,7 +47,7 @@ let getGames = async (participates, currentUser) => {
 
 /* GET a joining game page. */
 router.route('/join/:id').get(sessionChecker, function(req, res) {
-    Participate.findAll({ include: 'game', where: {over: false, gameInProgress: false} }).then(participates => {
+    Participate.findAll({ where: {over: false, gameInProgress: false, gameId: req.params.id} }).then(participates => {
 
         if (!participates.length) {
             Game.findAll().then(games => {
@@ -57,21 +57,22 @@ router.route('/join/:id').get(sessionChecker, function(req, res) {
             });
         } else {
 
-            getGames(participates, req.session.user).then((parties) => {
-                Participate.findOne({include: 'game', where: {gameId: req.params.id}}).then((participate, error) => {
-                    if (error)
-                        res.redirect('/lobby');
+            getGames(participates, req.session.user).then((parties, error) => {
+                if (error)
+                    res.redirect('/lobby');
 
+                Game.findByPk(req.params.id).then(game => {
                     res.render('game', {
-                        title: participate.game.title,
-                        participate: participate,
+                        title: game.title,
                         page_name: 'lobby',
                         err: '',
                         user: req.session.user,
                         lobbies: parties,
+                        game: game,
                         participates: participates
                     });
                 });
+
             });
         }
     });

@@ -1,6 +1,6 @@
 <%- include('header'); -%>
-<h1><%= participate.game.title %></h1>
-<p><%= participate.game.description %></p>
+<h1><%= game.title %></h1>
+<p><%= game.description %></p>
 <div class="container">
     <div class="row">
         <% for(let gameId in lobbies) { %>
@@ -27,7 +27,7 @@
                     <% } %>
                     <tr>
                         <% if (lobbies[gameId]['isOwner']) { %>
-                            <td class="text-center"><button class="btn btn-success" onclick="launch(<%= participate.id %>)">Lancer</button></td>
+                            <td class="text-center"><button class="btn btn-success" onclick="launch(<%= lobbies[gameId]['participate'].id %>)">Lancer</button></td>
                         <% } else { %>
                             <td class="text-center"><button onclick="join(<%= lobbies[gameId]['participate'] %>)" class="btn btn-<%= (lobbies[gameId]['isFull'] <= 0) ? 'danger' : 'success' %>" <%= (lobbies[gameId]['isFull'] <= 0 || lobbies[gameId]['canJoin'] === false) ? 'disabled' : '' %>>Rejoindre</button></td>
                         <% } %>
