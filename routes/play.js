@@ -7,7 +7,7 @@ let User = require('../models/User');
 let Participate = require('../models/Participate');
 const sessionChecker = require('../services/sessionChecker');
 
-async function getLasVegasConfig(participate, user) {
+async function getLasVegasConfig(participate) {
     const game = await Game.findByPk(participate.gameId);
     const users = await User.findAll({ include: { model: Lobby, where: { gameId: game.id }}});
 
@@ -16,10 +16,9 @@ async function getLasVegasConfig(participate, user) {
     let config = {};
 
     if (fs.existsSync(path)) {
-        config = fs.readFileSync(path, 'utf8');
+        config = JSON.parse(fs.readFileSync(path, 'utf8'));
     } else {
         config.users = {};
-        config.user = user;
         let colors = ['White', 'Black', 'Blue', 'Green', 'Magenta', 'Red', 'Yellow'];
 
         users.forEach(user => {
@@ -79,7 +78,8 @@ router.route('/:participateId').get(sessionChecker, function(req, res) {
     });
 }).post(sessionChecker, ((req, res) => {
     Participate.findByPk(req.params.participateId).then((participate) => {
-        getLasVegasConfig(participate, req.session.user).then(config => {
+        getLasVegasConfig(participate).then(config => {
+            config.user = req.session.user;
             res.send(config);
         });
     });
