@@ -1,8 +1,8 @@
 <%- include('header'); -%>
 <h1><%= title %></h1>
 <div class="container-fluid" ng-controller="playController">
-    <div class="row">
-        <div class="col-xl-7">
+    <div class="row no-gutters">
+        <div class="col-xl-9">
             <div class="row text-center">
                 <div class="col-2">
                     <h4 class="font-weight-bold">Golden Nugget</h4>
@@ -24,38 +24,61 @@
                 </div>
             </div>
 
-            <div class="row no-gutters text-center">
-                <div jqyoui-droppable data-drop="true" class="col-2">
-                    <img ng-src="/images/Column/One.png" width="100%">
+            <div class="row no-gutters dices-container">
+                <div jqyoui-droppable="{multiple: true, beforeDrop: 'beforeDrop(1)'}" data-drop="true" ng-click="putAll(1)" ng-model="goldenNugget" class="col-2 dices-subcontainer" back-img="/images/Column/One.png">
+                    <div class="row dices">
+                        <div ng-repeat="row in goldenNugget" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
+                            <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
+                        </div>
+                    </div>
                 </div>
-                <div jqyoui-droppable data-drop="true" class="col-2">
-                    <img ng-src="/images/Column/Two.png" width="100%">
+                <div jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(2)'}" data-drop="true" ng-click="putAll(2)" ng-model="caesarPalace" class="col-2 dices-subcontainer" back-img="/images/Column/Two.png">
+                    <div class="row dices">
+                        <div ng-repeat="row in caesarPalace" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
+                            <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
+                        </div>
+                    </div>
                 </div>
-                <div jqyoui-droppable data-drop="true" class="col-2">
-                    <img ng-src="/images/Column/Three.png" width="100%">
+                <div jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(3)'}" data-drop="true" ng-click="putAll(3)" ng-model="theMirage" class="col-2 dices-subcontainer" back-img="/images/Column/Three.png">
+                    <div class="row dices">
+                        <div ng-repeat="row in theMirage" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
+                            <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
+                        </div>
+                    </div>
                 </div>
-                <div jqyoui-droppable data-drop="true" class="col-2">
-                    <img ng-src="/images/Column/Four.png" width="100%">
+                <div jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(4)'}" data-drop="true" ng-click="putAll(4)" ng-model="sahara" class="col-2 dices-subcontainer" back-img="/images/Column/Four.png">
+                    <div class="row dices">
+                        <div ng-repeat="row in sahara" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
+                            <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
+                        </div>
+                    </div>
                 </div>
-                <div jqyoui-droppable data-drop="true" class="col-2">
-                    <img ng-src="/images/Column/Five.png" width="100%">
+                <div jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(5)'}" data-drop="true" ng-click="putAll(5)" ng-model="luxor" class="col-2 dices-subcontainer" back-img="/images/Column/Five.png">
+                    <div class="row dices">
+                        <div ng-repeat="row in luxor" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
+                            <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
+                        </div>
+                    </div>
                 </div>
-                <div jqyoui-droppable data-drop="true" class="col-2">
-                    <img ng-src="/images/Column/Six.png" width="100%">
+                <div jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(6)'}" data-drop="true" ng-click="putAll(6)" ng-model="circusCircus" class="col-2 dices-subcontainer" back-img="/images/Column/Six.png">
+                    <div class="row dices">
+                        <div ng-repeat="row in circusCircus" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
+                            <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-8 col-xl-3">
+        <div class="col-8 col-xl-2">
             <div class="row">
                 <div class="col-12">
-                    <div class="row p-3 mb-1 rounded" ng-repeat="(key, userData) in config.users track by $index">
+                    <div class="row p-3 mb-1 rounded" ng-repeat="userData in config.users">
                         <div class="col-12">{{ userData.user.username }}</div>
                         <div class="col-12">
                             <div class="row">
-                                <div class="col-2 mb-2" data-drag="true" jqyoui-draggable="{animate: true}" data-jqyoui-options="{revert: 'invalid'}" ng-repeat="d in userData.des track by $index">
-                                    <img class="pr-2" data-drag="true" jqyoui-draggable="{animate: true}" data-jqyoui-options="{revert: 'invalid'}" ng-if="$first" ng-src="/images/Dice/{{ userData.color }}/{{ (d % 6) + 1 }}.png" alt="Dés numéro {{ d }}" width="60px">
-                                    <img ng-if="!$first" data-drag="true" jqyoui-draggable="{animate: true}" data-jqyoui-options="{revert: 'invalid'}" ng-src="/images/Dice/{{ userData.color }}/{{ d }}.png" alt="Dés numéro {{ d }}" width="40px">
+                                <div class="{{ d.doubleDice ? 'col-3' : 'col-2' }} mb-1" data-drag="true" jqyoui-draggable="{animate: true}" data-jqyoui-options="{revert: 'invalid'}" ng-repeat="d in userData.des">
+                                    <img class="pr-2" data-drag="true" jqyoui-draggable="{animate: true, onStart: 'onStart(d)'}" ng-model="d" ng-if="d.dice" data-jqyoui-options="{revert: 'invalid'}" ng-src="/images/Dice/{{ d.color }}/{{ d.dice }}.png" alt="Dé numéro {{ d.dice }}" width="{{d.doubleDice ? '60px' : '40px'}}">
                                 </div>
                             </div>
                         </div>
@@ -63,7 +86,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-4 col-xl-2">ça c'est les logs</div>
+        <div class="col-4 col-xl-1">ça c'est les logs</div>
     </div>
 </div>
 <%- include('footer'); -%>
