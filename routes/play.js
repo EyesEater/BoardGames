@@ -52,16 +52,15 @@ async function getLasVegasConfig(participate) {
         config.columns = {};
         let nbCartes = Math.floor(Math.random() * (12 - 6) + 6);
         for (let i=0; i<6; i++) {
-            if (nbCartes >= (6-i)) {
-                if (config.columns[`${i}`]) {
+            if (nbCartes >= (6-i))
+                if (config.columns[`${i}`])
                     if (Math.floor(Math.random() * 3) > 1) {
                         config.columns[`${i}`].cartes.push(cartes[Math.floor(Math.random() * cartes.length)]);
                         i--;
                         nbCartes--;
-                    } else {
+                    } else
                         config.columns[`${i}`].cartes.sort((a, b) => b - a);
-                    }
-                } else {
+                else {
                     config.columns[`${i}`] = {};
                     config.columns[`${i}`].cartes = [];
                     config.columns[`${i}`].dices = {};
@@ -69,7 +68,8 @@ async function getLasVegasConfig(participate) {
                     i--;
                     nbCartes--;
                 }
-            }
+            else if (config.columns[`${i}`])
+                config.columns[`${i}`].cartes.sort((a, b) => b - a);
         }
 
         try {
