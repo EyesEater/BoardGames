@@ -9,7 +9,6 @@ const sessionChecker = require('../services/sessionChecker');
 
 async function getLasVegasConfig(participate) {
     const game = await Game.findByPk(participate.gameId);
-    const users = await User.findAll({ include: { model: Lobby, where: { gameId: game.id }}});
 
     let path = `saves/${game.title.replace(/\s/g, '')}_${participate.id}.json`;
 
@@ -21,6 +20,8 @@ async function getLasVegasConfig(participate) {
     if (fs.existsSync(path)) {
         config = JSON.parse(fs.readFileSync(path, 'utf8'));
     } else {
+        const users = await User.findAll({ include: { model: Lobby, where: { participateID: participate.id }}});
+
         config.users = {};
         let colors = ['White', 'Black', 'Blue', 'Green', 'Magenta', 'Red', 'Yellow'];
 
@@ -28,6 +29,7 @@ async function getLasVegasConfig(participate) {
             if (!config.users[`${user.id}`]) {
                 config.users[`${user.id}`] = {};
                 config.users[`${user.id}`].user = user;
+                config.nbUsers = users.length;
                 config.users[`${user.id}`].des = {};
             }
             config.users[`${user.id}`].des['0'] = {};
@@ -47,6 +49,10 @@ async function getLasVegasConfig(participate) {
             colors = colors.slice(0,colorIndex).concat(colors.slice(colorIndex+1, colors.length));
         });
 
+        let i = Math.floor(Math.random() * users.length);
+        config.playerTurn = {};
+        config.playerTurn = users[i];
+
         let cartes = [90000, 80000, 70000, 60000, 50000, 40000, 30000, 20000, 10000];
 
         config.columns = {};
@@ -63,7 +69,7 @@ async function getLasVegasConfig(participate) {
                 else {
                     config.columns[`${i}`] = {};
                     config.columns[`${i}`].cartes = [];
-                    config.columns[`${i}`].dices = {};
+                    config.columns[`${i}`].dices = [];
                     config.columns[`${i}`].cartes.push(cartes[Math.floor(Math.random() * cartes.length)]);
                     i--;
                     nbCartes--;
@@ -109,8 +115,32 @@ router.route('/:participateId/update').post(sessionChecker, (req, res) => {
     let participateId = req.params.participateId;
     let config = req.body.config;
 
-    console.log(participateId)
-    console.log(config)
+    User.findAll({ include: { model: Lobby, where: { participateID: participateId }}}).then(users => {
+        let over = false;
+        for (const key in users) {
+            if (users[key].id === config.playerTurn.id && !over) {
+                let isNext = false;
+                for (const key2 in users) {
+                    if (!over) {
+                        if (isNext) {
+                            config.playerTurn = users[key2];
+                            over = true;
+                        }
+                        if (key === key2)
+                            isNext = true;
+                    }
+                }
+            }
+        }
+        if (!over)
+            config.playerTurn = users[0]
+
+        Participate.findOne({where: {id: participateId}, include: 'game'}).then(participate => {
+            const path = `saves/${participate.game.title.replace(/\s/g, '')}_${participateId}.json`;
+            fs.writeFileSync(path, JSON.stringify(config));
+            res.status(200).send(config);
+        });
+    });
 });
 
 module.exports = router;

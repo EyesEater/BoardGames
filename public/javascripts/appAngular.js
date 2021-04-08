@@ -17,21 +17,14 @@ app.controller('playController', ($scope, $http, $location, localStorageService,
 
         $scope.canPlace = (column) => {
             let canPlace = false;
-            angular.forEach($scope.userDices.dices, key => {
-                if (key.dice === column)
-                    canPlace = true;
-            });
+            if ($scope.config.playerTurn.id === $scope.config.user.id)
+                angular.forEach($scope.userDices.dices, key => {
+                    if (key.dice === column)
+                        canPlace = true;
+                });
             return canPlace;
         }
     });
-
-    $scope.column = {};
-    $scope.column.goldenNugget = [];
-    $scope.column.caesarPalace = [];
-    $scope.column.theMirage = [];
-    $scope.column.sahara = [];
-    $scope.column.luxor = [];
-    $scope.column.circusCircus = [];
 
     $scope.beforeDrop = (event, ui, column) => {
         let deferred = $q.defer();
@@ -48,29 +41,6 @@ app.controller('playController', ($scope, $http, $location, localStorageService,
     }
 
     $scope.putAll = (column) => {
-        let colName = '';
-        switch (column) {
-            case 1:
-                colName = 'Golden Nugget';
-                break;
-            case 2:
-                colName = 'Caesar Palace';
-                break;
-            case 3:
-                colName = 'The Mirage';
-                break;
-            case 4:
-                colName = 'Sahara';
-                break;
-            case 5:
-                colName = 'Luxor';
-                break;
-            case 6:
-                colName = 'Circus Circus';
-                break;
-            default:
-                break;
-        }
         let modalInstance = $uibModal.open({
             animation: true,
             templateUrl: 'myModalContent.html',
@@ -84,34 +54,14 @@ app.controller('playController', ($scope, $http, $location, localStorageService,
             if (modalInstance.result)
                 angular.forEach($scope.userDices.dices, (key, dice) => {
                     if (key.dice === column) {
-                        switch (column) {
-                            case 1:
-                                $scope.column.goldenNugget.push(key);
-                                break;
-                            case 2:
-                                $scope.column.caesarPalace.push(key);
-                                break;
-                            case 3:
-                                $scope.column.theMirage.push(key);
-                                break;
-                            case 4:
-                                $scope.column.sahara.push(key);
-                                break;
-                            case 5:
-                                $scope.column.luxor.push(key);
-                                break;
-                            case 6:
-                                $scope.column.circusCircus.push(key);
-                                break;
-                            default:
-                                break;
-                        }
+                        $scope.config.columns[column-1].dices.push(key);
                         delete $scope.config.users[`${key.user.id}`].des[`${dice}`];
                     }
                 });
 
             $http.post(`/play/${$location.path().split('/')[2]}/update`, {config: $scope.config}).then(data => {
-                console.log(data)
+                console.log(data.data)
+                $scope.config = data.data;
             }, error => {
                 console.log(error)
             });
