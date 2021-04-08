@@ -15,6 +15,9 @@ async function getLasVegasConfig(participate) {
 
     let config = {};
 
+    if (!fs.existsSync('saves'))
+        fs.mkdirSync('saves')
+
     if (fs.existsSync(path)) {
         config = JSON.parse(fs.readFileSync(path, 'utf8'));
     } else {
