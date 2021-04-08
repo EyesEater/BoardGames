@@ -6,19 +6,9 @@ const app = angular.module('boardgame', ['LocalStorageModule', 'ngDragDrop', 'ui
     });
 });
 
-app.directive('backImg', () => {
-    return function(scope, element, attrs){
-        let url = attrs.backImg;
-        element.css({
-            'background-image': 'url(' + url +')',
-            'background-size' : 'cover'
-        });
-    };
-});
-
 app.controller('playController', ($scope, $http, $location, localStorageService, $q, $uibModal) => {
 
-    $http.post(`/play/${$location.path().split('/')[2]}`).then((data, error) => {
+    $http.post(`/play/${$location.path().split('/')[2]}`, {}).then((data, error) => {
         if (error) throw error
         $scope.config = data.data;
         $scope.userDices = {};
@@ -35,12 +25,13 @@ app.controller('playController', ($scope, $http, $location, localStorageService,
         }
     });
 
-    $scope.goldenNugget = [];
-    $scope.caesarPalace = [];
-    $scope.theMirage = [];
-    $scope.sahara = [];
-    $scope.luxor = [];
-    $scope.circusCircus = [];
+    $scope.column = {};
+    $scope.column.goldenNugget = [];
+    $scope.column.caesarPalace = [];
+    $scope.column.theMirage = [];
+    $scope.column.sahara = [];
+    $scope.column.luxor = [];
+    $scope.column.circusCircus = [];
 
     $scope.beforeDrop = (event, ui, column) => {
         let deferred = $q.defer();
@@ -57,7 +48,6 @@ app.controller('playController', ($scope, $http, $location, localStorageService,
     }
 
     $scope.putAll = (column) => {
-        let deferred = $q.defer();
         let colName = '';
         switch (column) {
             case 1:
@@ -87,46 +77,48 @@ app.controller('playController', ($scope, $http, $location, localStorageService,
             controller: 'modalController',
             ariaLabelledBy: 'modal-title',
             ariaDescribedBy: 'modal-body',
-            size: 'md'
+            size: 'sm'
         });
 
-        if (modalInstance.result) {
-            angular.forEach($scope.userDices.dices, (key, dice) => {
-                if (key.dice === column) {
-                    switch (column) {
-                        case 1:
-                            $scope.goldenNugget.push(key);
-                            break;
-                        case 2:
-                            $scope.caesarPalace.push(key);
-                            break;
-                        case 3:
-                            $scope.theMirage.push(key);
-                            break;
-                        case 4:
-                            $scope.sahara.push(key);
-                            break;
-                        case 5:
-                            $scope.luxor.push(key);
-                            break;
-                        case 6:
-                            $scope.circusCircus.push(key);
-                            break;
-                        default:
-                            break;
+        modalInstance.result.then(() => {
+            if (modalInstance.result)
+                angular.forEach($scope.userDices.dices, (key, dice) => {
+                    if (key.dice === column) {
+                        switch (column) {
+                            case 1:
+                                $scope.column.goldenNugget.push(key);
+                                break;
+                            case 2:
+                                $scope.column.caesarPalace.push(key);
+                                break;
+                            case 3:
+                                $scope.column.theMirage.push(key);
+                                break;
+                            case 4:
+                                $scope.column.sahara.push(key);
+                                break;
+                            case 5:
+                                $scope.column.luxor.push(key);
+                                break;
+                            case 6:
+                                $scope.column.circusCircus.push(key);
+                                break;
+                            default:
+                                break;
+                        }
+                        delete $scope.config.users[`${key.user.id}`].des[`${dice}`];
                     }
-                    delete $scope.config.users[`${key.user.id}`].des[`${dice}`];
-                }
+                });
+
+            $http.post(`/play/${$location.path().split('/')[2]}/update`, {config: $scope.config}).then(data => {
+                console.log(data)
+            }, error => {
+                console.log(error)
             });
-            deferred.resolve();
-        } else {
-            deferred.reject();
-        }
-        deferred.promise.then(() => {
-            console.log("C'est good");
+
         }, () => {
-            console.log("C'est pas good");
-        })
+            modalInstance.dismiss('backdrop');
+        });
     }
 });
 

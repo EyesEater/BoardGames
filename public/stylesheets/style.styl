@@ -24,15 +24,16 @@ body
 h4
   font-size calc(1.2rem + .4vw)
 
-.dices-container
-  float left
-  position relative
-
 .dices
   position absolute
   left 10%
   top 75%
   padding-right 30px
+
+div[class*='dices-subcontainer-']
+  margin 0
+  padding 0
+  width 100%
 
 .dices-subcontainer-hover
   transition all 0.3s ease-in-out
@@ -46,6 +47,8 @@ h4
   width 100%
   height 100%
   z-index 2
+  left 0
+  top 0
 
 .dices-subcontainer-hover:hover
   transform scale(1.02,1.02)
@@ -57,3 +60,46 @@ h4
 div[back-img]
   width 50vw
   height 60vh
+
+.fade.in
+  opacity 1
+
+.modal-backdrop.in
+  opacity 0.5
+
+.modal
+  top 40%
+
+.cash
+  position absolute
+  left 50%
+  top 1%
+  transform translate(-38%,0)
+
+.las-vegas-cash-col
+  position relative
+
+.top-0
+  margin-top 0
+
+.top-6
+  margin-top 30%
+
+.top-12
+  margin-top 60%
+
+.top-18
+  margin-top 90%
+
+.top-24
+  margin-top 120%
+
+.top-30
+  margin-top 150%
+
+.top-36
+  margin-top 180%
+
+@media screen and (max-width: 800px)
+  .img-cash
+    width 125%

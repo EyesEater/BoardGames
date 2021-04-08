@@ -1,8 +1,8 @@
 <%- include('header'); -%>
 <h1><%= title %></h1>
 <div class="container-fluid" ng-controller="playController">
-    <div class="row no-gutters">
-        <div class="col-xl-7">
+    <div class="row">
+        <div class="col-xl-7 md-4">
             <div class="row text-center">
                 <div class="col-2">
                     <h4 class="font-weight-bold">Golden Nugget</h4>
@@ -24,94 +24,166 @@
                 </div>
             </div>
 
-            <div class="row no-gutters dices-container">
-                <div ng-if="canPlace(1)" jqyoui-droppable="{multiple: true, beforeDrop: 'beforeDrop(1)'}" data-drop="true" ng-click="putAll(1)" ng-model="goldenNugget" class="col-2 dices-subcontainer-hover" back-img="/images/Column/One.png">
+            <div class="row dices-container">
+                <div ng-if="canPlace(1)" jqyoui-droppable="{multiple: true, beforeDrop: 'beforeDrop(1)'}" data-drop="true" ng-click="putAll(1)" ng-model="goldenNugget" class="col-2 dices-subcontainer-hover">
+                    <div ng-repeat="column in config.columns[0].cartes track by $index" class="row cash">
+                        <div class="col-12 top-{{$index*6}}">
+                            <img ng-src="/images/Card/{{ column }}.png" alt="{{ column }}€" class="img-cash">
+                        </div>
+                    </div>
                     <div class="row dices">
                         <div ng-repeat="row in goldenNugget" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
                             <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
                         </div>
                     </div>
-                </div><div ng-if="!canPlace(1)" jqyoui-droppable="{multiple: true, beforeDrop: 'beforeDrop(1)'}" data-drop="true" ng-model="goldenNugget" class="col-2 dices-subcontainer" back-img="/images/Column/One.png">
+                    <img ng-src="/images/Column/One.png" alt="Golden Nugget" width="100%">
+                </div><div ng-if="!canPlace(1)" jqyoui-droppable="{multiple: true, beforeDrop: 'beforeDrop(1)'}" data-drop="true" ng-model="goldenNugget" class="col-2 dices-subcontainer">
+                    <div ng-repeat="column in config.columns[0].cartes track by $index" class="row cash">
+                        <div class="col-12 top-{{$index*6}}">
+                            <img ng-src="/images/Card/{{ column }}.png" alt="{{ column }}€" class="img-cash">
+                        </div>
+                    </div>
                     <div class="row dices">
                         <div ng-repeat="row in goldenNugget" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
                             <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
                         </div>
                     </div>
+                    <img ng-src="/images/Column/One.png" alt="Golden Nugget" width="100%">
                 </div>
-                <div ng-if="canPlace(2)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(2)'}" data-drop="true" ng-click="putAll(2)" ng-model="caesarPalace" class="col-2 dices-subcontainer-hover" back-img="/images/Column/Two.png">
+                <div ng-if="canPlace(2)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(2)'}" data-drop="true" ng-click="putAll(2)" ng-model="caesarPalace" class="col-2 dices-subcontainer-hover">
+                    <div ng-repeat="column in config.columns[1].cartes track by $index" class="row cash">
+                        <div class="col-12 top-{{$index*6}}">
+                            <img ng-src="/images/Card/{{ column }}.png" alt="{{ column }}€" class="img-cash">
+                        </div>
+                    </div>
                     <div class="row dices">
                         <div ng-repeat="row in caesarPalace" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
                             <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
                         </div>
                     </div>
+                    <img ng-src="/images/Column/Two.png" alt="Caesar's Palace" width="100%">
                 </div>
-                <div ng-if="!canPlace(2)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(2)'}" data-drop="true" ng-model="caesarPalace" class="col-2 dices-subcontainer-hover" back-img="/images/Column/Two.png">
+                <div ng-if="!canPlace(2)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(2)'}" data-drop="true" ng-model="caesarPalace" class="col-2 dices-subcontainer-hover">
+                    <div ng-repeat="column in config.columns[1].cartes track by $index" class="row cash">
+                        <div class="col-12 top-{{$index*6}}">
+                            <img ng-src="/images/Card/{{ column }}.png" alt="{{ column }}€" class="img-cash">
+                        </div>
+                    </div>
                     <div class="row dices">
                         <div ng-repeat="row in caesarPalace" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
                             <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
                         </div>
                     </div>
+                    <img ng-src="/images/Column/Two.png" alt="Caesar's Palace" width="100%">
                 </div>
-                <div ng-if="canPlace(3)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(3)'}" data-drop="true" ng-click="putAll(3)" ng-model="theMirage" class="col-2 dices-subcontainer-hover" back-img="/images/Column/Three.png">
+                <div ng-if="canPlace(3)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(3)'}" data-drop="true" ng-click="putAll(3)" ng-model="theMirage" class="col-2 dices-subcontainer-hover">
+                    <div ng-repeat="column in config.columns[2].cartes track by $index" class="row cash">
+                        <div class="col-12 top-{{$index*6}}">
+                            <img ng-src="/images/Card/{{ column }}.png" alt="{{ column }}€" class="img-cash">
+                        </div>
+                    </div>
                     <div class="row dices">
                         <div ng-repeat="row in theMirage" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
                             <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
                         </div>
                     </div>
+                    <img ng-src="/images/Column/Three.png" alt="The Mirage" width="100%">
                 </div>
-                <div ng-if="!canPlace(3)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(3)'}" data-drop="true" ng-model="theMirage" class="col-2 dices-subcontainer" back-img="/images/Column/Three.png">
+                <div ng-if="!canPlace(3)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(3)'}" data-drop="true" ng-model="theMirage" class="col-2 dices-subcontainer">
+                    <div ng-repeat="column in config.columns[2].cartes track by $index" class="row cash">
+                        <div class="col-12 top-{{$index*6}}">
+                            <img ng-src="/images/Card/{{ column }}.png" alt="{{ column }}€" class="img-cash">
+                        </div>
+                    </div>
                     <div class="row dices">
                         <div ng-repeat="row in theMirage" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
                             <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
                         </div>
                     </div>
+                    <img ng-src="/images/Column/Three.png" alt="The Mirage" width="100%">
                 </div>
-                <div ng-if="canPlace(4)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(4)'}" data-drop="true" ng-click="putAll(4)" ng-model="sahara" class="col-2 dices-subcontainer-hover" back-img="/images/Column/Four.png">
+                <div ng-if="canPlace(4)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(4)'}" data-drop="true" ng-click="putAll(4)" ng-model="sahara" class="col-2 dices-subcontainer-hover">
+                    <div ng-repeat="column in config.columns[3].cartes track by $index" class="row cash">
+                        <div class="col-12 top-{{$index*6}}">
+                            <img ng-src="/images/Card/{{ column }}.png" alt="{{ column }}€" class="img-cash">
+                        </div>
+                    </div>
                     <div class="row dices">
                         <div ng-repeat="row in sahara" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
                             <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
                         </div>
                     </div>
+                    <img ng-src="/images/Column/Four.png" alt="Sahara" width="100%">
                 </div>
-                <div ng-if="!canPlace(4)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(4)'}" data-drop="true" ng-model="sahara" class="col-2 dices-subcontainer" back-img="/images/Column/Four.png">
+                <div ng-if="!canPlace(4)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(4)'}" data-drop="true" ng-model="sahara" class="col-2 dices-subcontainer">
+                    <div ng-repeat="column in config.columns[3].cartes track by $index" class="row cash">
+                        <div class="col-12 top-{{$index*6}}">
+                            <img ng-src="/images/Card/{{ column }}.png" alt="{{ column }}€" class="img-cash">
+                        </div>
+                    </div>
                     <div class="row dices">
                         <div ng-repeat="row in sahara" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
                             <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
                         </div>
                     </div>
+                    <img ng-src="/images/Column/Four.png" alt="Sahara" width="100%">
                 </div>
-                <div ng-if="canPlace(5)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(5)'}" data-drop="true" ng-click="putAll(5)" ng-model="luxor" class="col-2 dices-subcontainer-hover" back-img="/images/Column/Five.png">
+                <div ng-if="canPlace(5)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(5)'}" data-drop="true" ng-click="putAll(5)" ng-model="luxor" class="col-2 dices-subcontainer-hover">
+                    <div ng-repeat="column in config.columns[4].cartes track by $index" class="row cash">
+                        <div class="col-12 top-{{$index*6}}">
+                            <img ng-src="/images/Card/{{ column }}.png" alt="{{ column }}€" class="img-cash">
+                        </div>
+                    </div>
                     <div class="row dices">
                         <div ng-repeat="row in luxor" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
                             <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
                         </div>
                     </div>
+                    <img ng-src="/images/Column/Five.png" alt="Luxor" width="100%">
                 </div>
-                <div ng-if="!canPlace(5)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(5)'}" data-drop="true" ng-model="luxor" class="col-2 dices-subcontainer" back-img="/images/Column/Five.png">
+                <div ng-if="!canPlace(5)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(5)'}" data-drop="true" ng-model="luxor" class="col-2 dices-subcontainer">
+                    <div ng-repeat="column in config.columns[4].cartes track by $index" class="row cash">
+                        <div class="col-12 top-{{$index*6}}">
+                            <img ng-src="/images/Card/{{ column }}.png" alt="{{ column }}€" class="img-cash">
+                        </div>
+                    </div>
                     <div class="row dices">
                         <div ng-repeat="row in luxor" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
                             <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
                         </div>
                     </div>
+                    <img ng-src="/images/Column/Five.png" alt="Luxor" width="100%">
                 </div>
-                <div ng-if="canPlace(6)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(6)'}" data-drop="true" ng-click="putAll(6)" ng-model="circusCircus" class="col-2 dices-subcontainer-hover" back-img="/images/Column/Six.png">
+                <div ng-if="canPlace(6)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(6)'}" data-drop="true" ng-click="putAll(6)" ng-model="circusCircus" class="col-2 dices-subcontainer-hover">
+                    <div ng-repeat="column in config.columns[5].cartes track by $index" class="row cash">
+                        <div class="col-12 top-{{$index*6}}">
+                            <img ng-src="/images/Card/{{ column }}.png" alt="{{ column }}€" class="img-cash">
+                        </div>
+                    </div>
                     <div class="row dices">
                         <div ng-repeat="row in circusCircus" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
                             <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
                         </div>
                     </div>
+                    <img ng-src="/images/Column/Six.png" alt="Circus Circus" width="100%">
                 </div>
-                <div ng-if="!canPlace(6)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(6)'}" data-drop="true" ng-model="circusCircus" class="col-2 dices-subcontainer" back-img="/images/Column/Six.png">
+                <div ng-if="!canPlace(6)"  jqyoui-droppable="{multiple:true, beforeDrop: 'beforeDrop(6)'}" data-drop="true" ng-model="circusCircus" class="col-2 dices-subcontainer">
+                    <div ng-repeat="column in config.columns[5].cartes track by $index" class="row cash">
+                        <div class="col-12 top-{{$index*6}}">
+                            <img ng-src="/images/Card/{{ column }}.png" alt="{{ column }}€" class="img-cash">
+                        </div>
+                    </div>
                     <div class="row dices">
                         <div ng-repeat="row in circusCircus" class="{{ row.doubleDice ? 'col-4' : 'col-3' }}">
                             <img ng-src="/images/Dice/{{ row.color }}/{{ row.dice }}.png" alt="Dé numéro {{ row.dice }}" width="{{row.doubleDice ? '40px' : '30px'}}">
                         </div>
                     </div>
+                    <img ng-src="/images/Column/Six.png" alt="Circus Circus" width="100%">
                 </div>
             </div>
         </div>
 
-        <div class="col-4 col-xl-2">
+        <div class="col-7 col-md-4 col-xl-2">
             <div class="row">
                 <div class="col-12">
                     <div class="row p-3 mb-1 rounded" ng-repeat="userData in config.users">
@@ -127,16 +199,16 @@
                 </div>
             </div>
         </div>
-        <div class="col-8 col-xl-3">ça c'est les logs</div>
+        <div class="col-5 col-md-8 col-xl-3">ça c'est les logs</div>
     </div>
 </div>
 <script type="text/ng-template" id="myModalContent.html">
-    <div class="modal-body">
+    <div class="modal-body text-center">
         <b>Etes-vous sûr ?</b>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">OK</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-click="ok()">Oui</button>
+        <button class="btn btn-warning" ng-click="cancel()">Non</button>
     </div>
 </script>
 <%- include('footer'); -%>

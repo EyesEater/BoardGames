@@ -11,7 +11,7 @@ async function getLasVegasConfig(participate) {
     const game = await Game.findByPk(participate.gameId);
     const users = await User.findAll({ include: { model: Lobby, where: { gameId: game.id }}});
 
-    let path = `saves/${game.title.replace(/\s/g, '')}_${participate.id}.bck`;
+    let path = `saves/${game.title.replace(/\s/g, '')}_${participate.id}.json`;
 
     let config = {};
 
@@ -44,12 +44,29 @@ async function getLasVegasConfig(participate) {
             colors = colors.slice(0,colorIndex).concat(colors.slice(colorIndex+1, colors.length));
         });
 
-        let cartes = [100000, 90000, 80000, 60000, 40000, 20000];
+        let cartes = [90000, 80000, 70000, 60000, 50000, 40000, 30000, 20000, 10000];
 
-        config.cartes = [];
-        let nbCartes = Math.floor((Math.random() + 6) * 2);
-        for (let i=0; i<nbCartes; i++) {
-            config.cartes.push(cartes[Math.floor(Math.random() * cartes.length)]);
+        config.columns = {};
+        let nbCartes = Math.floor(Math.random() * (12 - 6) + 6);
+        for (let i=0; i<6; i++) {
+            if (nbCartes >= (6-i)) {
+                if (config.columns[`${i}`]) {
+                    if (Math.floor(Math.random() * 3) > 1) {
+                        config.columns[`${i}`].cartes.push(cartes[Math.floor(Math.random() * cartes.length)]);
+                        i--;
+                        nbCartes--;
+                    } else {
+                        config.columns[`${i}`].cartes.sort((a, b) => b - a);
+                    }
+                } else {
+                    config.columns[`${i}`] = {};
+                    config.columns[`${i}`].cartes = [];
+                    config.columns[`${i}`].dices = {};
+                    config.columns[`${i}`].cartes.push(cartes[Math.floor(Math.random() * cartes.length)]);
+                    i--;
+                    nbCartes--;
+                }
+            }
         }
 
         try {
@@ -63,7 +80,7 @@ async function getLasVegasConfig(participate) {
 }
 
 /* GET a Participate to a game page. */
-router.route('/:participateId').get(sessionChecker, function(req, res) {
+router.route('/:participateId').get(sessionChecker, (req, res) => {
     Participate.findByPk(req.params.participateId).then((participate) => {
         Game.findByPk(participate.gameId).then(game => {
             User.findAll({ include: { model: Lobby, where: { participateID: participate.id }}}).then(users => {
@@ -84,5 +101,13 @@ router.route('/:participateId').get(sessionChecker, function(req, res) {
         });
     });
 }));
+
+router.route('/:participateId/update').post(sessionChecker, (req, res) => {
+    let participateId = req.params.participateId;
+    let config = req.body.config;
+
+    console.log(participateId)
+    console.log(config)
+});
 
 module.exports = router;
