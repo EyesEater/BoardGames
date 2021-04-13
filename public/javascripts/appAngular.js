@@ -6,24 +6,52 @@ const app = angular.module('boardgame', ['LocalStorageModule', 'ngDragDrop', 'ui
     });
 });
 
-app.controller('playController', ($scope, $http, $location, localStorageService, $q, $uibModal) => {
+app.factory('socket', () => {
+    return io('http://127.0.0.1:3001');
+});
 
-    $http.post(`/play/${$location.path().split('/')[2]}`, {}).then((data, error) => {
-        if (error) throw error
-        $scope.config = data.data;
-        $scope.userDices = {};
-        $scope.userDices.dices = data.data.users[`${data.data.user.id}`].des;
-        localStorageService.set('LasVegasConfig', data.data);
-
+updateColumnsPlacement = ($scope) => {
+    for (let column=0; column<6; column++) {
         $scope.canPlace = (column) => {
             let canPlace = false;
-            if ($scope.config.playerTurn.id === $scope.config.user.id)
+            if ($scope.config.playerTurn.id === $scope.user.id)
                 angular.forEach($scope.userDices.dices, key => {
                     if (key.dice === column)
                         canPlace = true;
                 });
             return canPlace;
         }
+    }
+};
+
+app.controller('playController', ($scope, $http, $location, localStorageService, $q, $uibModal, socket) => {
+
+    $scope.orderByLength = (item) => {
+
+    };
+
+    socket.on("configChanged", (config) => {
+        $scope.config = config;
+        console.log($scope.userDices);
+        console.log($scope.config.users[`${$scope.user.id}`].des)
+        $scope.userDices.dices = $scope.config.users[`${$scope.user.id}`].des;
+        console.log($scope.userDices)
+
+        $scope.$apply();
+        updateColumnsPlacement($scope);
+    });
+
+    $http.post(`/play/${$location.path().split('/')[2]}`, {}).then((data, error) => {
+        if (error) throw error
+        $scope.config = data.data.config;
+        $scope.userDices = {};
+        $scope.user = data.data.user;
+        $scope.userDices.dices = data.data.config.users[`${$scope.user.id}`].des;
+        localStorageService.set('LasVegasConfig', $scope.config);
+
+        socket.emit("joinParticipate", $scope.config.participateId);
+
+        updateColumnsPlacement($scope);
     });
 
     $scope.beforeDrop = (event, ui, column) => {
@@ -59,12 +87,7 @@ app.controller('playController', ($scope, $http, $location, localStorageService,
                     }
                 });
 
-            $http.post(`/play/${$location.path().split('/')[2]}/update`, {config: $scope.config}).then(data => {
-                console.log(data.data)
-                $scope.config = data.data;
-            }, error => {
-                console.log(error)
-            });
+            socket.emit("gameChange", $scope.config);
 
         }, () => {
             modalInstance.dismiss('backdrop');

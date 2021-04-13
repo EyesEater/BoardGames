@@ -7,6 +7,8 @@ let stylus = require('stylus');
 let bodyParser = require('body-parser');
 let session = require('express-session');
 
+let app = express();
+
 const Game = require('./models/Game');
 const User = require('./models/User');
 const Lobby = require('./models/Lobby');
@@ -26,9 +28,8 @@ let lobbyRouter = require('./routes/lobby');
 let gamelistRouter = require('./routes/gamelist');
 let currentgame = require('./routes/currentgame');
 let gameRouter = require('./routes/game');
-let playRouter = require('./routes/play');
+let playRouter = require('./routes/play')(app);
 
-let app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
