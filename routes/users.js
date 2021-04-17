@@ -47,7 +47,7 @@ router.post('/create', (req, res) => {
 });
 
 router.route('/login').get(((req, res) => {
-  res.render('login', {title: 'Login', page_name: 'home', error: '', user: ''});
+  res.render('login', {title: 'Login', page_name: 'home', error: '', user: '', redirect: req.query.redirect});
 })).post((req, res) => {
   User.findOne({ where: { username: req.body.username } }).then((user) => {
     if (!user) {
@@ -56,7 +56,8 @@ router.route('/login').get(((req, res) => {
       res.render(req.url.substring(1), { title: 'Accueil', page_name: 'home', error: 'Wrong password', user: '' });
     } else {
       req.session.user = user.dataValues;
-      res.redirect('/');
+      let backUrl = req.query.redirect || '/';
+      res.redirect(backUrl);
     }
   });
 });

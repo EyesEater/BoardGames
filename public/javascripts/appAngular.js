@@ -27,15 +27,28 @@ updateColumnsPlacement = ($scope) => {
 app.controller('playController', ($scope, $http, $location, localStorageService, $q, $uibModal, socket) => {
 
     $scope.orderByLength = (item) => {
-
+        console.log(item)
     };
 
     socket.on("configChanged", (config) => {
         $scope.config = config;
-        console.log($scope.userDices);
-        console.log($scope.config.users[`${$scope.user.id}`].des)
         $scope.userDices.dices = $scope.config.users[`${$scope.user.id}`].des;
-        console.log($scope.userDices)
+        if ($scope.config.playerTurn.id === $scope.user.id) {
+            let modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'yourTurn.html',
+                controller: 'yourTurnController',
+                ariaLabelledBy: 'modal-title',
+                ariaDescribedBy: 'modal-body',
+                size: 'sm'
+            });
+
+            modalInstance.result.then((code) => {
+                console.log(code)
+            }, () => {
+                modalInstance.dismiss('backdrop');
+            });
+        }
 
         $scope.$apply();
         updateColumnsPlacement($scope);
@@ -103,4 +116,10 @@ app.controller('modalController', ($scope, $uibModalInstance) => {
     $scope.cancel = () => {
         $uibModalInstance.dismiss('cancel');
     }
-})
+});
+
+app.controller('yourTurnController', ($scope, $uibModalInstance) => {
+    $scope.ok = () => {
+        $uibModalInstance.close();
+    }
+});
