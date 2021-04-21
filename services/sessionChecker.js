@@ -1,5 +1,5 @@
 let sessionChecker = (req, res, next) => {
-    if (!req.session.user && !req.cookies.user_sid) {
+    if (!req.session.user) {
         res.redirect(`/users/login?redirect=${req.originalUrl}`);
     } else {
         next();

@@ -1,7 +1,8 @@
 <%- include('header'); -%>
 <h1><%= title %></h1>
 <div class="container-fluid" ng-controller="playController">
-    <h2>Au tour de {{ config.playerTurn.username }}</h2>
+    <h2 ng-if="!config.gameOver">Au tour de {{ config.playerTurn.username }}</h2>
+    <h2 ng-if="config.gameOver">Partie terminée</h2>
     <div class="row">
         <div class="col-xl-7 md-4">
             <div class="row text-center">

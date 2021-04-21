@@ -45,6 +45,8 @@ module.exports = (app) => {
             let colors = ['White', 'Black', 'Blue', 'Green', 'Magenta', 'Red', 'Yellow'];
             config.participateId = participate.id;
 
+            config.gameOver = false;
+
             users.forEach(user => {
                 if (!config.users[`${user.id}`]) {
                     config.users[`${user.id}`] = {};
@@ -140,6 +142,7 @@ module.exports = (app) => {
             let over = false;
             let firstUser;
             let firstIteration = true;
+            let gameOver = true;
 
             for (let userId in config.users) {
                 if (config.users.hasOwnProperty(userId) && !over) {
@@ -153,10 +156,12 @@ module.exports = (app) => {
 
                         for (let userId2 in config.users) {
                             if (config.users.hasOwnProperty(userId2) && !over) {
-                                if (isNext && config.users[userId2].des && Object.keys(config.users[userId2].des).length !== 0 && config.users[userId2].des.constructor === Object) {
+                                if (isNext && Object.keys(config.users[userId2].des).length !== 0 || (config.users[userId2].des && Object.keys(config.users[userId2].des).length !== 0 && config.users[userId2].des.constructor === Object)) {
                                     config.playerTurn = config.users[userId2].user;
                                     over = true;
                                 }
+                                if (Object.keys(config.users[userId2].des).length !== 0)
+                                    gameOver = false
                                 if (userId === userId2)
                                     isNext = true;
                             }
@@ -165,10 +170,15 @@ module.exports = (app) => {
                 }
             }
 
-            if (!over)
-                config.playerTurn = firstUser;
+            if (!gameOver) {
+                if (!over && !gameOver)
+                    config.playerTurn = firstUser;
+                config = rollDices(config);
+            } else {
+                config.playerTurn = null;
+                config.gameOver = true;
+            }
 
-            config = rollDices(config);
 
             Participate.findOne({where: {id: participateId}, include: 'game'}).then(participate => {
                 const path = `saves/${participate.game.title.replace(/\s/g, '')}_${participateId}.json`;

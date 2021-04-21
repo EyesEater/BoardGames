@@ -63,9 +63,13 @@ router.route('/login').get(((req, res) => {
 });
 
 router.post('/logout', (req, res) => {
-    if (req.session.user && req.cookies.user_sid) {
-        res.clearCookie('user_sid');
-        res.redirect('/');
+    if (req.session.user) {
+        req.session.destroy((err) => {
+            if (err) throw err
+
+            res.clearCookie('user', {path: '/'});
+            res.redirect('/');
+        });
     } else {
         res.redirect('/');
     }

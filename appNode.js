@@ -5,6 +5,7 @@ let logger = require('morgan');
 let stylus = require('stylus');
 let bodyParser = require('body-parser');
 let session = require('express-session');
+const MemoryStore = require('memorystore')(session);
 
 let app = express();
 
@@ -39,19 +40,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(session({
-  key: 'user_sid',
+  key: 'user',
   secret: 'BoardGameSecretForUserConnexionTokens',
   resave: false,
   saveUninitialized: false,
   rolling: true,
+  store: new MemoryStore({
+    checkPeriod: 24 * 60 * 60 * 1000
+  }),
   cookie: {
-    maxAge: 24 * 60 * 60 * 1000 * 7
+    maxAge: 24 * 60 * 60 * 1000
   }
 }));
 
 app.use((req, res, next) => {
-  if (req.cookies.user_sid && !req.session.user) {
-    res.clearCookie('user_sid');
+  if (!req.session.user) {
+    res.clearCookie('user');
   }
   next();
 });
