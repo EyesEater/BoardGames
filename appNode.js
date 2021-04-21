@@ -1,7 +1,6 @@
 let createError = require('http-errors');
 let express = require('express');
 let path = require('path');
-let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 let stylus = require('stylus');
 let bodyParser = require('body-parser');
@@ -39,14 +38,14 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(cookieParser());
 app.use(session({
   key: 'user_sid',
   secret: 'BoardGameSecretForUserConnexionTokens',
   resave: false,
   saveUninitialized: false,
+  rolling: true,
   cookie: {
-    expires: 600000
+    maxAge: 24 * 60 * 60 * 1000 * 7
   }
 }));
 
