@@ -1,8 +1,16 @@
 <%- include('header'); -%>
 <h1><%= title %></h1>
 <div class="container-fluid" ng-controller="playController">
-    <h2 ng-if="!config.gameOver">Au tour de {{ config.playerTurn.username }}</h2>
-    <h2 ng-if="config.gameOver">Partie terminée</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <h2 ng-show="!config.gameOver && !config.mancheOver">Au tour de {{ config.playerTurn.username }}</h2>
+            <h2 ng-show="config.gameOver">Partie terminée</h2>
+            <h2 ng-show="config.mancheOver">Manche terminée</h2>
+        </div>
+        <div class="col-md-3 offset-md-5">
+            <h2>Manche {{ config.manche }}/4</h2>
+        </div>
+    </div>
     <div class="row">
         <div class="col-xl-7 md-4">
             <div class="row text-center">
@@ -201,7 +209,24 @@
                 </div>
             </div>
         </div>
-        <div class="col-5 col-md-8 col-xl-3">ça c'est les logs</div>
+        <div class="col-5 col-md-8 col-xl-3 log-area" scroll-glue-bottom>
+            <div class="row mb-3" ng-repeat="log in config.logs">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-12">
+                            <span>{{ log[0].user.username }} à jouer</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-2" ng-repeat="dice in log">
+                            <img ng-src="/images/Dice/{{ dice.color }}/{{ dice.dice }}.png" alt="Dé numéro {{ dice.dice }}" width="{{ dice.doubleDice ? '40px' : '30px' }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script type="text/ng-template" id="myModalContent.html">
@@ -219,6 +244,36 @@
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="ok()">ok</button>
+    </div>
+</script>
+<script type="text/ng-template" id="nextManche.html">
+    <div class="modal-header text-center">
+        <h2 class="modal-title w-100">Jouer la prochaine manche ?</h2>
+    </div>
+    <div class="modal-body text-center">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col" ng-repeat="userData in users">
+                    <div class="row">
+                        <div class="col">
+                            <b>{{ userData.user.username }}</b>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <img ng-show="userData.isReady" src="/images/verifier.svg" width="40px" alt="Valider (Icônes conçues par Pixel perfect)"/>
+                            <img ng-show="!userData.isReady" src="/images/spinner.gif" width="40px" alt="En attente de {{ userData.user.username }}"/>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <button ng-show="userData.isReady || user.id !== userData.user.id" class="btn btn-primary" disabled>Accepter</button>
+                            <button ng-show="!userData.isReady && user.id === userData.user.id" class="btn btn-primary" ng-click="ready(user)">Accepter</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </script>
 <%- include('footer'); -%>

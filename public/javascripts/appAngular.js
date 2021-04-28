@@ -1,4 +1,4 @@
-const app = angular.module('boardgame', ['LocalStorageModule', 'ngDragDrop', 'ui.bootstrap'], $locationProvider => {
+const app = angular.module('boardgame', ['LocalStorageModule', 'ngDragDrop', 'ui.bootstrap', 'luegg.directives'], $locationProvider => {
     $locationProvider.html5Mode({
         enabled: true,
         requireBase: false,
@@ -14,7 +14,7 @@ updateColumnsPlacement = ($scope) => {
     for (let column=0; column<6; column++) {
         $scope.canPlace = (column) => {
             let canPlace = false;
-            if ($scope.config.playerTurn.id === $scope.user.id)
+            if (!$scope.gameOver && $scope.config.playerTurn && $scope.config.playerTurn.id === $scope.user.id)
                 angular.forEach($scope.userDices.dices, key => {
                     if (key.dice === column)
                         canPlace = true;
@@ -33,7 +33,55 @@ app.controller('playController', ($scope, $http, $location, localStorageService,
     socket.on("configChanged", (config) => {
         $scope.config = config;
         $scope.userDices.dices = $scope.config.users[`${$scope.user.id}`].des;
-        if ($scope.config.playerTurn.id === $scope.user.id) {
+
+        if ($scope.config.mancheOver) {
+            let user = $scope.user;
+            let config = $scope.config;
+            let modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'nextManche.html',
+                ariaLabelledBy: 'modal-title',
+                ariaDescribedBy: 'modal-body',
+                backdrop: 'static',
+                size: 'lg',
+                controller: ($scope, socket, $uibModalInstance) => {
+                    $scope.user = user;
+                    $scope.users = config.users;
+
+                    socket.on("someoneReady", (data) => {
+                        let user = data.user;
+                        let everyoneReady = data.everyoneReady;
+
+                        for (let key in $scope.users) {
+                            if ($scope.users.hasOwnProperty(key) && user.id === $scope.users[key].user.id)
+                                $scope.users[key].isReady = true;
+                        }
+
+                        if (everyoneReady)
+                            $uibModalInstance.close();
+
+                        $scope.$apply();
+                    });
+
+                    $scope.ready = (user) => {
+                        for (let key in $scope.users) {
+                            if ($scope.users.hasOwnProperty(key) && user.id === $scope.users[key].user.id)
+                                $scope.users[key].isReady = true;
+                        }
+
+                        socket.emit("someoneReady", {user: user, config: config});
+                    };
+                }
+            });
+
+            modalInstance.result.then((code) => {
+                $scope.$apply();
+            }, () => {
+                modalInstance.dismiss('backdrop');
+            });
+        }
+
+        if ($scope.config.playerTurn && $scope.config.playerTurn.id === $scope.user.id) {
             let modalInstance = $uibModal.open({
                 animation: true,
                 templateUrl: 'yourTurn.html',
@@ -44,7 +92,7 @@ app.controller('playController', ($scope, $http, $location, localStorageService,
             });
 
             modalInstance.result.then((code) => {
-                console.log(code)
+                $scope.$apply();
             }, () => {
                 modalInstance.dismiss('backdrop');
             });
@@ -61,6 +109,56 @@ app.controller('playController', ($scope, $http, $location, localStorageService,
         $scope.user = data.data.user;
         $scope.userDices.dices = data.data.config.users[`${$scope.user.id}`].des;
         localStorageService.set('LasVegasConfig', $scope.config);
+
+        let user = $scope.user;
+        let config = data.data.config;
+
+        if (config.mancheOver) {
+
+            let modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'nextManche.html',
+                ariaLabelledBy: 'modal-title',
+                ariaDescribedBy: 'modal-body',
+                backdrop: 'static',
+                size: 'lg',
+                controller: ($scope, socket, $uibModalInstance) => {
+                    $scope.user = user;
+                    $scope.users = config.users;
+
+                    socket.on("someoneReady", (data) => {
+                        let user = data.user;
+                        let everyoneReady = data.everyoneReady;
+
+                        for (let key in $scope.users) {
+                            if ($scope.users.hasOwnProperty(key) && user.id === $scope.users[key].user.id)
+                                $scope.users[key].isReady = true;
+                        }
+
+                        if (everyoneReady)
+                            $uibModalInstance.close();
+
+                        $scope.$apply();
+                    });
+
+                    $scope.ready = (user) => {
+                        for (let key in $scope.users) {
+                            if ($scope.users.hasOwnProperty(key) && user.id === $scope.users[key].user.id)
+                                $scope.users[key].isReady = true;
+                        }
+
+                        socket.emit("someoneReady", {user: user, config: config});
+                    };
+                }
+            });
+
+            modalInstance.result.then((code) => {
+                console.log(code)
+            }, () => {
+                modalInstance.dismiss('backdrop');
+            });
+
+        }
 
         socket.emit("joinParticipate", $scope.config.participateId);
 
@@ -92,13 +190,20 @@ app.controller('playController', ($scope, $http, $location, localStorageService,
         });
 
         modalInstance.result.then(() => {
-            if (modalInstance.result)
+            if (modalInstance.result) {
+                let tmp = [];
                 angular.forEach($scope.userDices.dices, (key, dice) => {
                     if (key.dice === column) {
-                        $scope.config.columns[column-1].dices.push(key);
+                        tmp.push(key);
+                        $scope.config.columns[column - 1].dices.push(key);
                         delete $scope.config.users[`${key.user.id}`].des[`${dice}`];
                     }
                 });
+
+                if (!$scope.config.logs)
+                    $scope.logs = [];
+                $scope.config.logs.push(tmp);
+            }
 
             socket.emit("gameChange", $scope.config);
 
